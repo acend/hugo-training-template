@@ -1,5 +1,5 @@
 baseurl = "/"
-title = "Kubernetes Basics Training"
+title = "Changeme Training"
 
 enableGitInfo = true
 
@@ -48,7 +48,7 @@ anchor = "smart"
 
 [Languages]
 [Languages.en]
-title = "Kubernetes Basics Training"
+title = "Changeme Training"
 languageName = "English"
 weight = 1
 
@@ -74,7 +74,7 @@ url = "https://www.acend.ch"
 [params]
 
 copyright = "acend gmbh"
-github_repo = "https://github.com/acend/kubernetes-basics-training"
+github_repo = "https://github.com/acend/changeme-training"
 
 enabledModule = "base"
 
