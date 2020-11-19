@@ -19,4 +19,4 @@ spec:
   tls:
   - hosts:
     - changeme.training.acend.ch
-  secretName: changeme-training-acend-ch
+    secretName: changeme-training-acend-ch
