@@ -22,7 +22,6 @@ After cloning the main repo, you need to initialize the submodule like this:
 git submodule update --init --recursive
 ```
 
-
 ## Build using Docker
 
 Build the image:
@@ -36,7 +35,6 @@ Run it locally:
 ```bash
 docker run -i -p 8080:8080 acend/changeme-training
 ```
-
 
 ### Using Buildah and Podman
 
@@ -52,7 +50,6 @@ Run it locally with the following command. Beware that `--rmi` automatically rem
 podman run --rm --rmi --interactive --publish 8080:8080 localhost/acend/changeme-training
 ```
 
-
 ## How to develop locally
 
 To develop locally we don't want to rebuild the entire container image every time something changed, and it is also important to use the same hugo versions like in production.
@@ -62,20 +59,18 @@ We simply mount the working directory into a running container, where hugo is st
 docker run --rm --interactive --publish 8080:8080 -v $(pwd):/opt/app/src -w /opt/app/src acend/hugo:<version-in-dockerfile> hugo server -p 8080 --bind 0.0.0.0
 ```
 
-
 ## Linting of Markdown content
 
-Markdown files are linted with <https://github.com/DavidAnson/markdownlint>.
-Custom rules are in `.markdownlint.json`.
-There's a GitHub Action `.github/workflows/markdownlint.yaml` for CI.
+Markdown files are linted with [markdownlint](https://github.com/DavidAnson/markdownlint).
+Custom rules are in [markdownlint.json](markdownlint.json).
+There's a GitHub Action [github/workflows/markdownlint.yaml](github/workflows/markdownlint.yaml) for CI.
 For local checks, you can either use Visual Studio Code with the corresponding extension, or the command line like this:
 
-```shell script
+```bash
 npm install
 node_modules/.bin/markdownlint content
 ```
 
-
 ## Contributions
 
-If you find errors, bugs or missing information please help us improve and have a look at the [Contribution Guide](CONTRIBUTING.md).
+If you find errors, bugs or missing information, please help us improve and have a look at the [Contribution Guide](CONTRIBUTING.md).
