@@ -10,8 +10,11 @@ sectionnumber: 1
 Sample Note
 {{% /alert %}}
 
+Sample code block:
+```bash
+echo "Hello World!"
+```
+
 {{< onlyWhen variant1 >}}
-
 This is only rendered when `enabledModule` in `config.toml` contains `variant1`
-
 {{< /onlyWhen >}}
