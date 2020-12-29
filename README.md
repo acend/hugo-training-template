@@ -50,7 +50,7 @@ git submodule update --remote
 Build the image:
 
 ```bash
-docker build -t acend/changeme-training:latest .
+docker build <--build-arg HUGO_ENV=...> -t acend/changeme-training .
 ```
 
 Run it locally:
