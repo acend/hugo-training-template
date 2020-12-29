@@ -33,5 +33,5 @@ jobs:
           file: ./Dockerfile
           push: false
           tags: |
-            acend/helm-basics-training:latest
-            quay.io/acend/helm-basics-training:latest
+            acend/changeme:latest
+            quay.io/acend/changeme:latest
