@@ -8,14 +8,33 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Docker meta
-        id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@v1
-        with:
-          images: |
-            acend/changeme
-            quay.io/acend/changeme
+      - name: Define Tag prefix
+        id: tag_prefix
+        run: |
+          # GITHUB_REF=refs/heads/philipona/test
+          # results in ::set-output name=tag_prefix::philipona-test-
+          # GITHUB_REF=refs/heads/main
+          # results in ::set-output name=tag_prefix::
+          # GITHUB_REF=refs/heads/master # for backwards compatibility
+          # results in ::set-output name=tag_prefix::
+          # GITHUB_REF=refs/pull/11/merge
+          # results in ::set-output name=tag_prefix::pr-11-
+
+          delim="-"
+          ghreturnprefix="::set-output name=tag_prefix::"
+
+          if [[ ${GITHUB_REF} == *"refs/heads"* ]]; then
+            branch=$(echo ${GITHUB_REF#refs/heads/} | sed -E 's/[^a-zA-Z0-9._-]+/-/g')
+            if [[ $branch == "main" || $branch == "master" ]]; then
+              echo $ghreturnprefix""
+            else
+              echo $ghreturnprefix$branch$delim
+            fi
+          elif [[ ${GITHUB_REF} == *"refs/pull"* ]]; then
+            echo $ghreturnprefix"pr-$(echo ${GITHUB_REF#refs/pull/} | sed -E 's/\/merge$//g' | sed -E 's/[^a-zA-Z0-9._-]+/-/g')"$delim
+          elif [[ ${GITHUB_REF} == *"refs/tags"* ]]; then
+            echo $ghreturnprefix$(echo ${GITHUB_REF#refs/tags/} | sed -E 's/[^a-zA-Z0-9._-]+/-/g')$delim
+          fi
       - 
         name: Checkout
         uses: actions/checkout@v2
@@ -42,5 +61,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: false
-          tags: ${{ steps.docker_meta.outputs.tags }}
-          labels: ${{ steps.docker_meta.outputs.labels }}
+          tags: |
+            acend/changeme:${{ steps.tag_prefix.outputs.tag_prefix }}latest
+            quay.io/acend/changeme:${{ steps.tag_prefix.outputs.tag_prefix }}latest
