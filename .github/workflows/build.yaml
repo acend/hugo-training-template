@@ -1,4 +1,4 @@
-name: Build Training
+name: Build Training and Publish
 
 on:
   push:
@@ -40,8 +40,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: recursive
-      - name: Branch name
-        run: echo running on branch ${GITHUB_REF#refs/heads/}
       - 
         name: Lint Markdown
         uses: nosborn/github-action-markdown-cli@v1.1.1
@@ -54,13 +52,20 @@ jobs:
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+      -
+        name: Login to Quay.io Container Registry
+        uses: docker/login-action@v1 
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAYIO_USERNAME }}
+          password: ${{ secrets.QUAYIO_TOKEN }}
       - 
         name: Build Latest Version
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
-          push: false
+          push: true
+          # changeme to true and set the correct tags
           tags: |
-            acend/changeme:${{ steps.tag_prefix.outputs.tag_prefix }}latest
-            quay.io/acend/changeme:${{ steps.tag_prefix.outputs.tag_prefix }}latest
+            quay.io/acend/hugo-training-template:${{ steps.tag_prefix.outputs.tag_prefix }}latest 
