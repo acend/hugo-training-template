@@ -12,28 +12,27 @@ jobs:
         id: tag_prefix
         run: |
           # GITHUB_REF=refs/heads/philipona/test
-          # results in ::set-output name=tag_prefix::philipona-test-
+          # results in ::set-output name=tag_prefix::philipona-test
           # GITHUB_REF=refs/heads/main
-          # results in ::set-output name=tag_prefix::
+          # results in ::set-output name=tag_prefix::latest
           # GITHUB_REF=refs/heads/master # for backwards compatibility
-          # results in ::set-output name=tag_prefix::
-          # GITHUB_REF=refs/pull/11/merge
-          # results in ::set-output name=tag_prefix::pr-11-
+          # results in ::set-output name=tag_prefix::latest
+          #GITHUB_REF=refs/pull/11/merge
+          # results in ::set-output name=tag_prefix::pr-11
 
-          delim="-"
           ghreturnprefix="::set-output name=tag_prefix::"
 
           if [[ ${GITHUB_REF} == *"refs/heads"* ]]; then
             branch=$(echo ${GITHUB_REF#refs/heads/} | sed -E 's/[^a-zA-Z0-9._-]+/-/g')
             if [[ $branch == "main" || $branch == "master" ]]; then
-              echo $ghreturnprefix""
+              echo $ghreturnprefix"latest"
             else
-              echo $ghreturnprefix$branch$delim
+              echo $ghreturnprefix$branch
             fi
           elif [[ ${GITHUB_REF} == *"refs/pull"* ]]; then
-            echo $ghreturnprefix"pr-$(echo ${GITHUB_REF#refs/pull/} | sed -E 's/\/merge$//g' | sed -E 's/[^a-zA-Z0-9._-]+/-/g')"$delim
+            echo $ghreturnprefix"pr-$(echo ${GITHUB_REF#refs/pull/} | sed -E 's/\/merge$//g' | sed -E 's/[^a-zA-Z0-9._-]+/-/g')"
           elif [[ ${GITHUB_REF} == *"refs/tags"* ]]; then
-            echo $ghreturnprefix$(echo ${GITHUB_REF#refs/tags/} | sed -E 's/[^a-zA-Z0-9._-]+/-/g')$delim
+            echo $ghreturnprefix$(echo ${GITHUB_REF#refs/tags/} | sed -E 's/[^a-zA-Z0-9._-]+/-/g')
           fi
       - 
         name: Checkout
@@ -68,4 +67,4 @@ jobs:
           push: true
           # changeme to true and set the correct tags
           tags: |
-            quay.io/acend/hugo-training-template:${{ steps.tag_prefix.outputs.tag_prefix }}latest 
+            quay.io/acend/hugo-training-template:${{ steps.tag_prefix.outputs.tag_prefix }} 
