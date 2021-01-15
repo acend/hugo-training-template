@@ -83,3 +83,9 @@ jobs:
 
         env:
           KUBECONFIG_FILE: '${{ secrets.KUBECONFIG_TEST }}'
+      - 
+        name: Comment on PR
+        uses: thollander/actions-comment-pull-request@master
+        with:
+          message: 'PR Environement: https://hugo-training-template-${{ steps.tag_prefix.outputs.tag_prefix }}.training.acend.ch'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
