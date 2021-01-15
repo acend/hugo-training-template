@@ -81,9 +81,22 @@ jobs:
           token: '${{ github.token }}'
           helm: 'helm3'
           values: |
-            image.tag=${{ steps.tag_prefix.outputs.tag_prefix }}
-            ingress.hosts[0].host=hugo-training-template-${{ steps.tag_prefix.outputs.tag_prefix }}.training.acend.ch
-            ingress.tls[0].hosts[0]=hugo-training-template-${{ steps.tag_prefix.outputs.tag_prefix }}.training.acend.ch
-            ingress.tls[0].secretName=hugo-training-template-${{ steps.tag_prefix.outputs.tag_prefix }}-training-acend-ch
+            image
+              tag:${{ steps.tag_prefix.outputs.tag_prefix }}
+            ingress:
+              enabled: true
+              annotations: 
+                kubernetes.io/ingress.class: nginx-public
+                kubernetes.io/tls-acme: "true"
+                cert-manager.io/cluster-issuer: acend-letsencrypt
+              hosts:
+                - host: hugo-training-template-${{ steps.tag_prefix.outputs.tag_prefix }}.training.acend.ch
+                  paths: 
+                    - /
+              tls: 
+                - secretName: hugo-training-template-${{ steps.tag_prefix.outputs.tag_prefix }}-training-acend-ch
+                  hosts:
+                    - hugo-training-template-${{ steps.tag_prefix.outputs.tag_prefix }}.training.acend.ch
+
         env:
           KUBECONFIG_FILE: '${{ secrets.KUBECONFIG_TEST }}'
