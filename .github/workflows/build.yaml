@@ -4,7 +4,6 @@
 name: Build Training and Publish
 
 on:
-  push:
   pull_request:
 
 jobs:
