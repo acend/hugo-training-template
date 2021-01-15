@@ -79,6 +79,7 @@ jobs:
           namespace: 'acend-hugo-training-template-test'
           chart: 'helm-chart'
           token: '${{ github.token }}'
+          helm: 'helm3'
           values: |
             image.tag="${{ steps.tag_prefix.outputs.tag_prefix }}"
             ingress.hosts[0].host=hugo-training-template-${{ steps.tag_prefix.outputs.tag_prefix }}.training.acend.ch
