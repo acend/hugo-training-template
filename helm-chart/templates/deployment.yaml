@@ -5,8 +5,7 @@ metadata:
   labels:
     {{- include "acend-hugo-template.labels" . | nindent 4 }}
   annotations:
-    keel.sh/policy: "force"
-    keel.sh/match-tag: "true"
+    timestamp: {{ now | quote }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
