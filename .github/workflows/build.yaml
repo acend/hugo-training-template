@@ -80,6 +80,14 @@ jobs:
 
         env:
           KUBECONFIG_FILE: '${{ secrets.KUBECONFIG_TEST }}'
+      -
+        name: redeploy pod
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG_TEST_BASE64 }}
+          KUBECTL_VERSION: "1.19"
+        with:
+          args: rollout restart deployment/${{ steps.tag_prefix.outputs.tag_prefix }}-acend-hugo-template --namespace acend-hugo-training-template-test
       - 
         name: Comment on PR
         uses: marocchino/sticky-pull-request-comment@v2
