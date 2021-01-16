@@ -27,3 +27,11 @@ This is only rendered when `enabledModule` in `config.toml` contains `variant1`
 foo: bar
 ```
 
+
+## Task 1.1: Fix Deployment
+
+
+```yaml
+foo: bar
+```
+
