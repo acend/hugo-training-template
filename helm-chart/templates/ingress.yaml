@@ -1,6 +1,6 @@
-{{- $fullName := include "acend-training-chart.fullname" . -}}
+{{- $fullName := include "acend-hugo-template.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
-{{- $hostname := include "acend-training-chart.hostname" . -}}
+{{- $hostname := include "acend-hugo-template.hostname" . -}}
 {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1beta1
 {{- else -}}
@@ -10,7 +10,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "acend-training-chart.labels" . | nindent 4 }}
+    {{- include "acend-hugo-template.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
