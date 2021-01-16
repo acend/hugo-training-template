@@ -9,7 +9,7 @@ Expand the name of the chart.
 Hostname
 */}}
 {{- define "acend-training-chart.hostname" -}}
-{{- if eq .Release.Name "main" }}
+{{- if or (eq .Release.Name "main") (eq .Release.Name "latest") }}
 {{- printf "%s%s%s" .Values.ingress.appname "." .Values.ingress.domain }}
 {{- else }}
 {{- printf "%s%s%s%s%s" .Values.ingress.appname "-" .Release.Name "." .Values.ingress.domain }}
