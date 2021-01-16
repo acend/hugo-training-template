@@ -48,7 +48,7 @@ jobs:
         name: 'Deploy'
         uses: 'deliverybot/helm@v1'
         with:
-          release: 'main'
+          release: 'latest'
           namespace: 'acend-hugo-training-template-prod'
           version: '${{ github.sha }}'
           chart: 'helm-chart'

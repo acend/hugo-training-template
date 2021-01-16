@@ -7,32 +7,6 @@ jobs:
   deployment:
     runs-on: 'ubuntu-latest'
     steps:
-      - name: Define Tag prefix
-        id: tag_prefix
-        run: |
-          # GITHUB_REF=refs/heads/philipona/test
-          # results in ::set-output name=tag_prefix::philipona-test
-          # GITHUB_REF=refs/heads/main
-          # results in ::set-output name=tag_prefix::latest
-          # GITHUB_REF=refs/heads/master # for backwards compatibility
-          # results in ::set-output name=tag_prefix::latest
-          #GITHUB_REF=refs/pull/11/merge
-          # results in ::set-output name=tag_prefix::pr-11
-
-          ghreturnprefix="::set-output name=tag_prefix::"
-
-          if [[ ${GITHUB_REF} == *"refs/heads"* ]]; then
-            branch=$(echo ${GITHUB_REF#refs/heads/} | sed -E 's/[^a-zA-Z0-9._-]+/-/g')
-            if [[ $branch == "main" || $branch == "master" ]]; then
-              echo $ghreturnprefix"latest"
-            else
-              echo $ghreturnprefix$branch
-            fi
-          elif [[ ${GITHUB_REF} == *"refs/pull"* ]]; then
-            echo $ghreturnprefix"pr-$(echo ${GITHUB_REF#refs/pull/} | sed -E 's/\/merge$//g' | sed -E 's/[^a-zA-Z0-9._-]+/-/g')"
-          elif [[ ${GITHUB_REF} == *"refs/tags"* ]]; then
-            echo $ghreturnprefix$(echo ${GITHUB_REF#refs/tags/} | sed -E 's/[^a-zA-Z0-9._-]+/-/g')
-          fi
       - 
         name: Checkout
         uses: actions/checkout@v2
@@ -43,7 +17,7 @@ jobs:
         with:
           # Task remove means to remove the helm release.
           task: 'remove'
-          release: '${{ steps.tag_prefix.outputs.tag_prefix }}'
+          release: 'pr-${{ github.event.pull_request.number }}'
           namespace: 'acend-hugo-training-template-test'
           version: '${{ github.sha }}'
           chart: 'helm-chart'
