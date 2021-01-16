@@ -57,3 +57,10 @@ jobs:
 
         env:
           KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
+      - 
+        name: redeploy pod
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG_BASE64 }}
+        with:
+          args: rollout restart deployment/latest-acend-hugo-template --namespace acend-hugo-training-template-prod
