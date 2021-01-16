@@ -80,12 +80,11 @@ jobs:
 
         env:
           KUBECONFIG_FILE: '${{ secrets.KUBECONFIG_TEST }}'
-      -
+      - 
         name: redeploy pod
-        uses: steebchen/kubectl@master
+        uses: actions-hub/kubectl@master
         env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG_TEST_BASE64 }}
-          KUBECTL_VERSION: "19"
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG_TEST }}
         with:
           args: rollout restart deployment/${{ steps.tag_prefix.outputs.tag_prefix }}-acend-hugo-template --namespace acend-hugo-training-template-test
       - 
