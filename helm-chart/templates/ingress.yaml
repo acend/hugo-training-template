@@ -1,17 +1,23 @@
 {{- $fullName := include "acend-hugo-template.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
-{{- $hostname := include "acend-hugo-template.hostname" . -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
+{{- $svcPort := .Values.acendTraining.servicePort -}}
+{{- $releaseName := .Release.Name -}}
+{{- $all := . -}}
+{{- range .Values.acendTraining.deployments }}
+{{- $hostname := "" }}
+{{- if or (eq $releaseName "main") (eq $releaseName "latest") }}
+{{- $hostname = printf "%s%s%s" .ingress.appname "." .ingress.domain }}
+{{- else }}
+{{- $hostname = printf "%s%s%s%s%s" .ingress.appname "-" $releaseName "." .ingress.domain }}
 {{- end }}
+---
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ $fullName }}-{{ .name }}
   labels:
-    {{- include "acend-hugo-template.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+    {{- include "acend-hugo-template.labels" $all | nindent 4 }}
+    app.kubernetes.io/name: {{ include "acend-hugo-template.name" $all }}-{{ .name }}
+  {{- with .ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -26,5 +32,6 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: {{ $fullName }}
+              serviceName: {{ $fullName }}-{{ .name }}
               servicePort: {{ $svcPort }}
+{{- end }}

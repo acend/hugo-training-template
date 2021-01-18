@@ -5,17 +5,6 @@ Expand the name of the chart.
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-{{/*
-Hostname
-*/}}
-{{- define "acend-hugo-template.hostname" -}}
-{{- if or (eq .Release.Name "main") (eq .Release.Name "latest") }}
-{{- printf "%s%s%s" .Values.ingress.appname "." .Values.ingress.domain }}
-{{- else }}
-{{- printf "%s%s%s%s%s" .Values.ingress.appname "-" .Release.Name "." .Values.ingress.domain }}
-{{- end }}
-{{- end }}
-
 
 {{/*
 Create a default fully qualified app name.
@@ -42,6 +31,7 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
+
 {{/*
 Common labels
 */}}
@@ -58,7 +48,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "acend-hugo-template.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "acend-hugo-template.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 

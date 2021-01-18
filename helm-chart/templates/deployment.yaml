@@ -1,16 +1,22 @@
+{{- $fullName := include "acend-hugo-template.fullname" . -}}
+{{- $all := . -}}
+{{- range .Values.acendTraining.deployments }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "acend-hugo-template.fullname" . }}
+  name: {{ $fullName }}-{{ .name }}
   labels:
-    {{- include "acend-hugo-template.labels" . | nindent 4 }}
+    {{- include "acend-hugo-template.labels" $all | nindent 4 }}
+    app.kubernetes.io/name: {{ include "acend-hugo-template.name" $all }}-{{ .name }}
   annotations:
     timestamp: {{ now | quote }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .replicaCount }}
   selector:
     matchLabels:
-      {{- include "acend-hugo-template.selectorLabels" . | nindent 6 }}
+      {{- include "acend-hugo-template.selectorLabels" $all | nindent 6 }}
+      app.kubernetes.io/name: {{ include "acend-hugo-template.name" $all }}-{{ .name }}
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -18,26 +24,21 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
-        {{- include "acend-hugo-template.selectorLabels" . | nindent 8 }}
+        {{- include "acend-hugo-template.selectorLabels" $all | nindent 8 }}
+        app.kubernetes.io/name: {{ include "acend-hugo-template.name" $all }}-{{ .name }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "acend-hugo-template.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      serviceAccountName: {{ include "acend-hugo-template.serviceAccountName" $all }}
       containers:
         - name: training
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Release.Name }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+            allowPrivilegeEscalation: false
+            capabilities: {}
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+          image: "{{ .image.repository }}:{{ .image.tag | default $all.Release.Name }}{{ .image.tagsuffix | default "" }}"
+          imagePullPolicy: {{ .image.pullPolicy }}
           ports:
             - name: http
               containerPort: 8080
@@ -61,16 +62,10 @@ spec:
             successThreshold: 2
             timeoutSeconds: 2
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 20m
+              memory: 56Mi
+{{- end }}
