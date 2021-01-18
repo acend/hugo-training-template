@@ -7,32 +7,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Define Tag prefix
-        id: tag_prefix
-        run: |
-          # GITHUB_REF=refs/heads/philipona/test
-          # results in ::set-output name=tag_prefix::philipona-test
-          # GITHUB_REF=refs/heads/main
-          # results in ::set-output name=tag_prefix::latest
-          # GITHUB_REF=refs/heads/master # for backwards compatibility
-          # results in ::set-output name=tag_prefix::latest
-          #GITHUB_REF=refs/pull/11/merge
-          # results in ::set-output name=tag_prefix::pr-11
-
-          ghreturnprefix="::set-output name=tag_prefix::"
-
-          if [[ ${GITHUB_REF} == *"refs/heads"* ]]; then
-            branch=$(echo ${GITHUB_REF#refs/heads/} | sed -E 's/[^a-zA-Z0-9._-]+/-/g')
-            if [[ $branch == "main" || $branch == "master" ]]; then
-              echo $ghreturnprefix"latest"
-            else
-              echo $ghreturnprefix$branch
-            fi
-          elif [[ ${GITHUB_REF} == *"refs/pull"* ]]; then
-            echo $ghreturnprefix"pr-$(echo ${GITHUB_REF#refs/pull/} | sed -E 's/\/merge$//g' | sed -E 's/[^a-zA-Z0-9._-]+/-/g')"
-          elif [[ ${GITHUB_REF} == *"refs/tags"* ]]; then
-            echo $ghreturnprefix$(echo ${GITHUB_REF#refs/tags/} | sed -E 's/[^a-zA-Z0-9._-]+/-/g')
-          fi
       - 
         name: Checkout
         uses: actions/checkout@v2
@@ -66,12 +40,24 @@ jobs:
           push: true
           # changeme to true and set the correct tags
           tags: |
-            quay.io/acend/hugo-training-template:${{ steps.tag_prefix.outputs.tag_prefix }}
+            quay.io/acend/hugo-training-template:pr-${{ github.event.pull_request.number }}
+      - 
+        name: Build Latest Version
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          build-args: |
+            ACEND_HUGO_ENV=puzzle
+          push: true
+          # changeme to true and set the correct tags
+          tags: |
+            quay.io/acend/hugo-training-template:pr-${{ github.event.pull_request.number }}-puzzle
       - 
         name: 'Deploy'
         uses: 'deliverybot/helm@v1'
         with:
-          release: '${{ steps.tag_prefix.outputs.tag_prefix }}'
+          release: 'pr-${{ github.event.pull_request.number }}'
           namespace: 'acend-hugo-training-template-test'
           version: '${{ github.sha }}'
           chart: 'helm-chart'
@@ -81,12 +67,19 @@ jobs:
         env:
           KUBECONFIG_FILE: '${{ secrets.KUBECONFIG_TEST }}'
       - 
-        name: redeploy pod
+        name: redeploy acend deployment
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG_TEST_BASE64 }}
         with:
-          args: rollout restart deployment/${{ steps.tag_prefix.outputs.tag_prefix }}-acend-hugo-template --namespace acend-hugo-training-template-test
+          args: rollout restart deployment/pr-${{ github.event.pull_request.number }}-acend-hugo-template-acend --namespace acend-hugo-training-template-test
+      - 
+        name: redeploy puzzle deployment
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG_TEST_BASE64 }}
+        with:
+          args: rollout restart deployment/pr-${{ github.event.pull_request.number }}-acend-hugo-template-puzzle --namespace acend-hugo-training-template-test
       - 
         name: Comment on PR
         uses: marocchino/sticky-pull-request-comment@v2
