@@ -86,4 +86,6 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
-           PR Environement: <https://hugo-training-template-${{ steps.tag_prefix.outputs.tag_prefix }}.training.acend.ch>
+           PR Environements: 
+           *  acend <https://hugo-training-template-pr-${{ github.event.pull_request.number }}.training.acend.ch>
+           *  puzzle <https://hugo-training-template-pr-${{ github.event.pull_request.number }}.k8s.puzzle.ch>
