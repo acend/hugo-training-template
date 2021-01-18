@@ -42,6 +42,3 @@ foo: bar
 ```yaml
 foo: bar
 ```
-
-
-
