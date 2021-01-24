@@ -63,9 +63,14 @@ jobs:
           release: 'latest'
           namespace: 'acend-hugo-training-template-prod'
           version: '${{ github.sha }}'
-          chart: 'helm-chart'
+          repository: 'https://acend.github.io/helm-charts/'
+          chart: 'acend-training-chart'
           token: '${{ github.token }}'
           helm: 'helm3'
+          value-files: |
+            [
+              "helm-chart/values.yaml"
+            ]
 
         env:
           KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
