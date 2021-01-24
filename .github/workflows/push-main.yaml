@@ -1,3 +1,14 @@
+# changeme 
+# Change the following parts to your current installation
+# - entire Docker Build steps accordingly to the amount of different versions or tags your building ACEND_HUGO_ENV
+#   - Tags
+# - Helm Target Namespace
+# - Name of K8S Deployment to trigger and namespace
+# - Secrets
+#   - QUAYIO_USERNAME and QUAYIO_TOKEN must be set accordingly to your registry, existing users must have access to the repos
+#   - KUBECONFIG content of the Kubeconfig File, Account must have access to the k8s namespace. It's used in the helm steps
+#   - KUBECONFIG_BASE64 same as KUBECONFIG but Base64 encoded. It's used in the kubectl steps
+
 name: Publish Main Version
 
 on:
@@ -35,17 +46,17 @@ jobs:
           username: ${{ secrets.QUAYIO_USERNAME }}
           password: ${{ secrets.QUAYIO_TOKEN }}
       - 
-        name: Build Latest Version
+        name: Build Acend Version
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
           push: true
-          # changeme to true and set the correct tags
+          # changeme
           tags: |
             quay.io/acend/hugo-training-template:latest
       - 
-        name: Build Latest Version
+        name: Build Puzzle Version
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -53,7 +64,7 @@ jobs:
           build-args: |
             ACEND_HUGO_ENV=puzzle
           push: true
-          # changeme to true and set the correct tags
+          # changeme
           tags: |
             quay.io/acend/hugo-training-template:latest-puzzle
       - 
@@ -61,11 +72,17 @@ jobs:
         uses: 'deliverybot/helm@v1'
         with:
           release: 'latest'
+          # changeme
           namespace: 'acend-hugo-training-template-prod'
           version: '${{ github.sha }}'
-          chart: 'helm-chart'
+          repository: 'https://acend.github.io/helm-charts/'
+          chart: 'acend-training-chart'
           token: '${{ github.token }}'
           helm: 'helm3'
+          value-files: |
+            [
+              "helm-chart/values.yaml"
+            ]
 
         env:
           KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
@@ -75,6 +92,7 @@ jobs:
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG_BASE64 }}
         with:
+          # changeme
           args: rollout restart deployment/latest-acend-hugo-template-acend --namespace acend-hugo-training-template-prod
       - 
         name: redeploy puzzle deployment
@@ -82,4 +100,5 @@ jobs:
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG_BASE64 }}
         with:
+          # changeme
           args: rollout restart deployment/latest-acend-hugo-template-puzzle --namespace acend-hugo-training-template-prod

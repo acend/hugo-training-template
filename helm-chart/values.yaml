@@ -1,6 +1,4 @@
-# Default values for acend-hugo-template.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# CHANGEME
 
 
 acendTraining:
@@ -38,7 +36,7 @@ acendTraining:
 
 
 
-nameOverride: ""
+nameOverride: "acend-hugo-template"
 fullnameOverride: ""
 
 serviceAccount:
