@@ -102,6 +102,15 @@ node_modules/.bin/markdownlint content
   * Prod namespace: prod deployment
 
 
+### Quota on Testnamespace
+
+Add the quota to the test namespace:
+
+```bash
+kubectl apply -f object-count-quota.yaml -n <namespace>
+```
+
+
 ## Github Actions
 
 
@@ -131,6 +140,21 @@ The [push main action](.github/workflows/push-main.yaml) is fired when a commit 
 * deploys the built container images to the container registry
 * Deploys the main Version on k8s using helm
 * Triggers a redeployment
+
+
+## Helm
+
+Manually deploy the training Release using the following command:
+
+```bash
+helm install --repo https://acend.github.io/helm-charts/  <release> acend-training-chart --values helm-chart/values.yaml -n <namespace>
+```
+
+For debugging purposes use the `--dry-run` parameter
+
+```bash
+helm install --dry-run --repo https://acend.github.io/helm-charts/  <release> acend-training-chart --values helm-chart/values.yaml -n <namespace>
+```
 
 
 ## Contributions
