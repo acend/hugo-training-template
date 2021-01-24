@@ -35,3 +35,10 @@ foo: bar
 foo: bar
 ```
 
+
+## Task 1.2: Fix Release
+
+
+```yaml
+foo: bar
+```
