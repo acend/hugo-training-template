@@ -38,7 +38,7 @@ acendTraining:
 
 
 
-nameOverride: "hugo-training-template"
+nameOverride: "acend-hugo-template"
 fullnameOverride: ""
 
 serviceAccount:
