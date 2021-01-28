@@ -53,7 +53,7 @@ jobs:
           tags: |
             quay.io/acend/hugo-training-template:pr-${{ github.event.pull_request.number }}
       - 
-        name: Build Latest Version
+        name: Build Puzzle Version
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -65,7 +65,7 @@ jobs:
           tags: |
             quay.io/acend/hugo-training-template:pr-${{ github.event.pull_request.number }}-puzzle
       - 
-        name: 'Deploy'
+        name: 'Deploy Helm Release'
         uses: 'deliverybot/helm@v1'
         with:
           release: 'pr-${{ github.event.pull_request.number }}'
@@ -84,7 +84,7 @@ jobs:
         env:
           KUBECONFIG_FILE: '${{ secrets.KUBECONFIG_TEST }}'
       - 
-        name: redeploy acend deployment
+        name: Redeploy acend Deployment
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG_TEST_BASE64 }}
@@ -92,7 +92,7 @@ jobs:
           # changeme
           args: rollout restart deployment/pr-${{ github.event.pull_request.number }}-acend-hugo-template-acend --namespace acend-hugo-training-template-test
       - 
-        name: redeploy puzzle deployment
+        name: Redeploy Puzzle Deployment
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG_TEST_BASE64 }}
@@ -100,12 +100,12 @@ jobs:
           # changeme
           args: rollout restart deployment/pr-${{ github.event.pull_request.number }}-acend-hugo-template-puzzle --namespace acend-hugo-training-template-test
       - 
-        name: Comment on PR
+        name: Comment PR Environments in PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # changeme
           message: |
-           PR Environements: 
-           *  acend <https://hugo-training-template-pr-${{ github.event.pull_request.number }}.training.acend.ch>
-           *  puzzle <https://hugo-training-template-pr-${{ github.event.pull_request.number }}.k8s.puzzle.ch>
+           PR Environments: 
+           * acend version <https://hugo-training-template-pr-${{ github.event.pull_request.number }}.training.acend.ch>
+           * puzzle version <https://hugo-training-template-pr-${{ github.event.pull_request.number }}.k8s.puzzle.ch>
