@@ -68,7 +68,7 @@ jobs:
           tags: |
             quay.io/acend/hugo-training-template:latest-puzzle
       - 
-        name: 'Deploy'
+        name: 'Deploy Helm Release'
         uses: 'deliverybot/helm@v1'
         with:
           release: 'latest'
@@ -87,7 +87,7 @@ jobs:
         env:
           KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
       - 
-        name: redeploy acend deployment
+        name: Redeploy acend Deployment
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG_BASE64 }}
@@ -95,7 +95,7 @@ jobs:
           # changeme
           args: rollout restart deployment/latest-acend-hugo-template-acend --namespace acend-hugo-training-template-prod
       - 
-        name: redeploy puzzle deployment
+        name: Redeploy puzzle Deployment
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG_BASE64 }}
