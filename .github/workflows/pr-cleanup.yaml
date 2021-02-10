@@ -25,3 +25,11 @@ jobs:
           helm: 'helm3'
         env:
           KUBECONFIG_FILE: '${{ secrets.KUBECONFIG_TEST }}'
+      - name: Delete Tags on Quay
+        id: delete_tags
+        env:
+          QUAYIO_TOKEN: '${{ secrets.QUAYIO_TOKEN }}'
+          PR_NUMBER: '${{ github.event.pull_request.number }}'
+        run: |
+          curl -X DELETE -H "Authorization: Bearer ${QUAYIO_TOKEN}" https://quay.io/api/v1/repository/acend/hugo-training-template/tag/pr-${PR_NUMBER}
+          curl -X DELETE -H "Authorization: Bearer ${QUAYIO_TOKEN}" https://quay.io/api/v1/repository/acend/hugo-training-template/tag/pr-${PR_NUMBER}-puzzle
