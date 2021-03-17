@@ -54,5 +54,5 @@ foo: bar
 
 
 ```yaml
-foo: bar
+foo: bart
 ```
