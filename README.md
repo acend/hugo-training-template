@@ -47,6 +47,7 @@ git submodule update --remote
 
 ### Shortcode usage
 
+
 #### `onlyWhen` and `onlyWhenNot`
 
 The `onlyWhen` and `onlyWhenNot` shortcodes allow text to be rendered if certain conditions apply.
