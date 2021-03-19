@@ -45,6 +45,28 @@ git submodule update --remote
 ```
 
 
+### Shortcode usage
+
+#### `onlyWhen` and `onlyWhenNot`
+
+The `onlyWhen` and `onlyWhenNot` shortcodes allow text to be rendered if certain conditions apply.
+
+* `{{% onlyWhen variant1 %}}`: This is only rendered when `enabledModule` in `config.toml` contains `variant1`
+* `{{% onlyWhen variant1 variant2 %}}`: This is only rendered when `enabledModule` in `config.toml` contains `variant1` **or** `variant2`
+* `{{% onlyWhenNot variant1 %}}`: This is only rendered when `enabledModule` in `config.toml` **does not** contain `variant1`
+* `{{% onlyWhenNot variant1 variant2 %}}`: This is only rendered when `enabledModule` in `config.toml` **does not** contain `variant1` **or** `variant2`
+
+In order to only render text if **all** of multiple conditions do not apply simply chain several `onlyWhenNot` shortcodes:
+
+```
+{{% onlyWhenNot variant1 %}}
+{{% onlyWhenNot variant2 %}}
+This is only rendered when `enabledModule` in `config.toml` **does not** contain `variant1` **nor** `variant2`.
+{{% /onlyWhen %}}
+{{% /onlyWhen %}}
+```
+
+
 ## Build using Docker
 
 Build the image:
