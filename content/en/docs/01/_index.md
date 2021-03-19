@@ -31,6 +31,22 @@ This is only rendered when `enabledModule` in `config.toml` contains `variant1` 
 This is only rendered when `enabledModule` in `config.toml` contains `variant9`.
 {{% /onlyWhen %}}
 
+{{% onlyWhenNot variant1 %}}
+This is only rendered when `enabledModule` in `config.toml` **does not** contain `variant1`.
+{{% /onlyWhen %}}
+
+{{% onlyWhenNot variant2 %}}
+This is only rendered when `enabledModule` in `config.toml` **does not** contain `variant2`.
+{{% /onlyWhen %}}
+
+{{% onlyWhenNot variant1 variant2 %}}
+This is only rendered when `enabledModule` in `config.toml` **does not** contain `variant1` **nor** `variant2`.
+{{% /onlyWhen %}}
+
+{{% onlyWhenNot variant9 %}}
+This is only rendered when `enabledModule` in `config.toml` **does not** contain `variant9`.
+{{% /onlyWhen %}}
+
 
 ## Title 2
 
