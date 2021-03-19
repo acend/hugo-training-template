@@ -16,7 +16,6 @@ disableSVG = true
 defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = false
 
-
 disableKinds = ["taxonomy", "taxonomyTerm"]
 
 # Highlighting config
@@ -45,13 +44,11 @@ resampleFilter = "CatmullRom"
 quality = 75
 anchor = "smart"
 
-
 [Languages]
 [Languages.en]
 title = "Changeme Training"
 languageName = "English"
 weight = 1
-
 
 # navigation
 [Languages.en.menu]
@@ -72,7 +69,6 @@ url = "https://www.acend.ch"
   guessSyntax = "true"
 
 [params]
-
 copyright = "acend gmbh"
 github_repo = "https://github.com/acend/changeme-training"
 github_branch = "main"
@@ -99,7 +95,7 @@ footer_about_disable = true
 [[params.links.developer]]
 name = "GitHub"
 icon = "fab fa-github"
-url = "https://github.com/acend/kubernetes-basics-training"
+url = "https://github.com/acend/changeme-training"
 
 [[params.links.user]]
 name = "Twitter"
