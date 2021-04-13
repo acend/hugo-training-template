@@ -26,12 +26,14 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: recursive
-      - 
-        name: Lint Markdown
-        uses: nosborn/github-action-markdown-cli@v1.1.1
+      -
+        name: Set up npm for linting
+        uses: actions/setup-node@v2
         with:
-          files: "content *.md"
-          config_file: ".markdownlint.json"
+          node-version: '15.x'
+      -
+        name: Lint Markdown
+        run: npm ci && npm run mdlint
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
