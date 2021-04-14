@@ -21,7 +21,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - 
+      -
         name: Checkout
         uses: actions/checkout@v2
         with:
@@ -47,7 +47,7 @@ jobs:
           registry: quay.io
           username: ${{ secrets.QUAYIO_USERNAME }}
           password: ${{ secrets.QUAYIO_TOKEN }}
-      - 
+      -
         name: Build Acend Version
         uses: docker/build-push-action@v2
         with:
@@ -57,7 +57,18 @@ jobs:
           # changeme
           tags: |
             quay.io/acend/hugo-training-template:latest
-      - 
+      -
+        name: Run vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          # changeme
+          image-ref: 'quay.io/acend/hugo-training-template:latest'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os'
+          severity: 'CRITICAL,HIGH'
+      -
         name: Build Puzzle Version
         uses: docker/build-push-action@v2
         with:
@@ -69,7 +80,18 @@ jobs:
           # changeme
           tags: |
             quay.io/acend/hugo-training-template:latest-puzzle
-      - 
+      -
+        name: Run vulnerability scanner Puzzle
+        uses: aquasecurity/trivy-action@master
+        with:
+          # changeme
+          image-ref: 'quay.io/acend/hugo-training-template:latest-puzzle'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os'
+          severity: 'CRITICAL,HIGH'
+      -
         name: 'Deploy Helm Release'
         uses: 'deliverybot/helm@v1'
         with:
@@ -85,10 +107,9 @@ jobs:
             [
               "helm-chart/values.yaml"
             ]
-
         env:
           KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
-      - 
+      -
         name: Redeploy acend Deployment
         uses: actions-hub/kubectl@master
         env:
@@ -96,7 +117,7 @@ jobs:
         with:
           # changeme
           args: rollout restart deployment/latest-acend-hugo-template-acend --namespace acend-hugo-training-template-prod
-      - 
+      -
         name: Redeploy puzzle Deployment
         uses: actions-hub/kubectl@master
         env:
