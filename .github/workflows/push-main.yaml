@@ -1,6 +1,6 @@
 # changeme 
 # Change the following parts to your current installation
-# - entire Docker Build steps accordingly to the amount of different versions or tags your building ACEND_HUGO_ENV
+# - entire Docker Build steps accordingly to the amount of different versions or tags your building TRAINING_HUGO_ENV
 #   - Tags
 # - Helm Target Namespace
 # - Name of K8S Deployment to trigger and namespace
@@ -21,17 +21,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - 
+      -
         name: Checkout
         uses: actions/checkout@v2
         with:
           submodules: recursive
-      - 
-        name: Lint Markdown
-        uses: nosborn/github-action-markdown-cli@v1.1.1
+      -
+        name: Set up npm for linting
+        uses: actions/setup-node@v2
         with:
-          files: "content *.md"
-          config_file: ".markdownlint.json"
+          node-version: '15.x'
+      -
+        name: Lint Markdown
+        run: npm ci && npm run mdlint
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -45,7 +47,7 @@ jobs:
           registry: quay.io
           username: ${{ secrets.QUAYIO_USERNAME }}
           password: ${{ secrets.QUAYIO_TOKEN }}
-      - 
+      -
         name: Build Acend Version
         uses: docker/build-push-action@v2
         with:
@@ -55,19 +57,41 @@ jobs:
           # changeme
           tags: |
             quay.io/acend/hugo-training-template:latest
-      - 
+      -
+        name: Run vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          # changeme
+          image-ref: 'quay.io/acend/hugo-training-template:latest'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os'
+          severity: 'CRITICAL,HIGH'
+      -
         name: Build Puzzle Version
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
           build-args: |
-            ACEND_HUGO_ENV=puzzle
+            TRAINING_HUGO_ENV=puzzle
           push: true
           # changeme
           tags: |
             quay.io/acend/hugo-training-template:latest-puzzle
-      - 
+      -
+        name: Run vulnerability scanner Puzzle
+        uses: aquasecurity/trivy-action@master
+        with:
+          # changeme
+          image-ref: 'quay.io/acend/hugo-training-template:latest-puzzle'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os'
+          severity: 'CRITICAL,HIGH'
+      -
         name: 'Deploy Helm Release'
         uses: 'deliverybot/helm@v1'
         with:
@@ -83,10 +107,9 @@ jobs:
             [
               "helm-chart/values.yaml"
             ]
-
         env:
           KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
-      - 
+      -
         name: Redeploy acend Deployment
         uses: actions-hub/kubectl@master
         env:
@@ -94,7 +117,7 @@ jobs:
         with:
           # changeme
           args: rollout restart deployment/latest-acend-hugo-template-acend --namespace acend-hugo-training-template-prod
-      - 
+      -
         name: Redeploy puzzle Deployment
         uses: actions-hub/kubectl@master
         env:
