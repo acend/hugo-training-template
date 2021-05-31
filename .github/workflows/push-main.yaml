@@ -81,17 +81,6 @@ jobs:
           tags: |
             quay.io/acend/hugo-training-template:latest-puzzle
       -
-        name: Run vulnerability scanner Puzzle
-        uses: aquasecurity/trivy-action@master
-        with:
-          # changeme
-          image-ref: 'quay.io/acend/hugo-training-template:latest-puzzle'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os'
-          severity: 'CRITICAL,HIGH'
-      -
         name: 'Deploy Helm Release'
         uses: 'deliverybot/helm@v1'
         with:
