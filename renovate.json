@@ -22,6 +22,12 @@
       "matchManagers": ["git-submodules"],
       "matchPackageNames": ["themes/docsy-plus", "themes/docsy-acend", "themes/docsy-puzzle"],
       "automerge": true
+    },
+    {
+      "matchManagers": ["git-submodules"],
+      "matchPackageNames": ["themes/docsy"],
+      "schedule": ["after 9pm on sunday"],
+      "automerge": false
     }
   ]
 }
