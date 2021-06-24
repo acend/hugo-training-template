@@ -5,6 +5,7 @@
   "git-submodules": {
     "enabled": true
   },
+  "prConcurrentLimit": 4,
   "packageRules": [
     {
       "matchDepTypes": ["devDependencies"],
