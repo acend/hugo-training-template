@@ -27,7 +27,7 @@
       "matchManagers": ["git-submodules"],
       "matchPackageNames": ["themes/docsy"],
       "schedule": ["after 9pm on sunday"],
-      "automerge": true
+      "automerge": false
     }
   ]
 }
