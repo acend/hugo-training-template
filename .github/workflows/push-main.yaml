@@ -7,7 +7,6 @@
 # - Secrets
 #   - QUAYIO_USERNAME and QUAYIO_TOKEN must be set accordingly to your registry, existing users must have access to the repos
 #   - KUBECONFIG content of the Kubeconfig File, Account must have access to the k8s namespace. It's used in the helm steps
-#   - KUBECONFIG_BASE64 same as KUBECONFIG but Base64 encoded. It's used in the kubectl steps
 
 name: Publish Main Version
 
@@ -48,7 +47,7 @@ jobs:
           username: ${{ secrets.QUAYIO_USERNAME }}
           password: ${{ secrets.QUAYIO_TOKEN }}
       -
-        name: Build Acend Version
+        name: Build Latest Version
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -87,37 +86,37 @@ jobs:
           # changeme
           tags: |
             quay.io/acend/hugo-training-template:latest-puzzle
-      -
-        name: 'Deploy Helm Release'
-        uses: 'deliverybot/helm@v1'
+      - 
+        name: 'Install Helm'
+        uses: azure/setup-helm@v1
         with:
-          release: 'latest'
-          # changeme
-          namespace: 'acend-hugo-training-template-prod'
-          version: '${{ github.sha }}'
-          repository: 'https://acend.github.io/helm-charts/'
-          chart: 'acend-training-chart'
-          token: '${{ github.token }}'
-          helm: 'helm3'
-          value-files: |
-            [
-              "helm-chart/values.yaml"
-            ]
-        env:
-          KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
-      -
-        name: Redeploy acend Deployment
-        uses: actions-hub/kubectl@master
-        env:
-          KUBE_CONFIG: ${{ secrets.KUBECONFIG_BASE64 }}
+          version: v3.6.2
+      - 
+        name: Install Kubectl
+        uses: azure/setup-kubectl@v1
         with:
-          # changeme
-          args: rollout restart deployment/latest-acend-hugo-template-acend --namespace acend-hugo-training-template-prod
-      -
-        name: Redeploy puzzle Deployment
-        uses: actions-hub/kubectl@master
+          version: v1.21.2
+      - 
+        name: Create KUBECONFIG
         env:
-          KUBE_CONFIG: ${{ secrets.KUBECONFIG_BASE64 }}
-        with:
-          # changeme
-          args: rollout restart deployment/latest-acend-hugo-template-puzzle --namespace acend-hugo-training-template-prod
+          KUBE_CONFIG: '${{ secrets.KUBECONFIG }}'
+        run: |
+          mkdir -p $HOME/.kube
+          echo "$KUBE_CONFIG" > $HOME/.kube/config
+      - 
+        name: Deploy Helm Release
+        env:
+          TRAINING_HELM_RELEASE: 'latest'
+          TRAINING_NAMESPACE: 'acend-hugo-training-template-prod' # changeme
+          TRAINING_VERSION: '${{ github.sha }}'
+        run: |
+          helm upgrade $TRAINING_HELM_RELEASE acend-training-chart --install --wait --kubeconfig $HOME/.kube/config  --namespace=$TRAINING_NAMESPACE --set=app.name=$HELM_RELEASE --set=app.version=$TRAINING_VERSION --repo=https://acend.github.io/helm-charts/ --values=helm-chart/values.yaml --atomic
+      - 
+        name: Redeploy Deployments
+        env:
+          TRAINING_HELM_RELEASE: 'latest'
+          TRAINING_NAMESPACE: 'acend-hugo-training-template-prod' # changeme
+        # changeme
+        run: |
+          kubectl rollout restart deployment/$TRAINING_HELM_RELEASE-acend-hugo-template-acend --kubeconfig $HOME/.kube/config --namespace $TRAINING_NAMESPACE
+          kubectl rollout restart deployment/$TRAINING_HELM_RELEASE-acend-hugo-template-puzzle --kubeconfig $HOME/.kube/config --namespace $TRAINING_NAMESPACE
