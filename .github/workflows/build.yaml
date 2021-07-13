@@ -84,24 +84,22 @@ jobs:
           # changeme
           tags: |
             quay.io/acend/hugo-training-template:pr-${{ github.event.pull_request.number }}-puzzle
-      -
-        name: 'Deploy Helm Release'
-        uses: 'deliverybot/helm@v1'
+      - 
+        name: 'Install Helm'
+        uses: azure/setup-helm@v1
         with:
-          release: 'pr-${{ github.event.pull_request.number }}'
-          # changeme
-          namespace: 'acend-hugo-training-template-test'
-          version: '${{ github.sha }}'
-          repository: 'https://acend.github.io/helm-charts/'
-          chart: 'acend-training-chart'
-          token: '${{ github.token }}'
-          helm: 'helm3'
-          value-files: |
-            [
-              "helm-chart/values.yaml"
-            ]
+          version: v3.6.2
+      - 
+        name: 'Deploy Helm Release'
         env:
-          KUBECONFIG_FILE: '${{ secrets.KUBECONFIG_TEST }}'
+          KUBE_CONFIG: '${{ secrets.KUBECONFIG_TEST }}'
+          TRAINING_HELM_RELEASE: 'pr-${{ github.event.pull_request.number }}'
+          TRAINING_NAMESPACE: 'acend-hugo-training-template-test' # changeme
+          TRAINING_VERSION: '${{ github.sha }}'
+        run: |
+          mkdir -p $HOME/.kube
+          echo "$KUBE_CONFIG" > $HOME/.kube/config
+          helm upgrade $TRAINING_HELM_RELEASE acend-training-chart --install --wait --kubeconfig $HOME/.kube/config  --namespace=$TRAINING_NAMESPACE --set=app.name=$HELM_RELEASE --set=app.version=$TRAINING_VERSION --repo=https://acend.github.io/helm-charts/ --values=helm-chart/values.yaml --atomic
       -
         name: Redeploy acend Deployment
         uses: actions-hub/kubectl@master
