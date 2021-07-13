@@ -7,7 +7,6 @@
 # - Secrets
 #   - QUAYIO_USERNAME and QUAYIO_TOKEN must be set accordingly to your registry, existing users must have access to the repos
 #   - KUBECONFIG content of the Kubeconfig File, Account must have access to the k8s namespace. It's used in the helm steps
-#   - KUBECONFIG_BASE64 same as KUBECONFIG but Base64 encoded. It's used in the kubectl steps
 
 name: Publish Main Version
 
