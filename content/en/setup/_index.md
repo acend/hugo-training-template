@@ -7,5 +7,5 @@ menu:
     weight: 1
 ---
 
-## Setup
+## Install
 
