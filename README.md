@@ -129,7 +129,7 @@ docker run --rm --interactive -v $(pwd):/src klakegg/hugo:${HUGO_VERSION}-ci /bi
     * all of [.gitmodules](.gitmodules) needed?
     * if checkout is not working, add them manually:
       * `git submodule add https://github.com/google/docsy.git ./themes/docsy`
-      * `git submodule add https://github.com/puzzle/docsy-plus.git ./themes/docsy-plus`
+      * `git submodule add https://github.com/acend/docsy-plus.git ./themes/docsy-plus`
       * ...
   * replace all CHANGEME
     * `https://github.com/changeme/changeme-training` to your repo url
