@@ -83,6 +83,21 @@ docker run -i -p 8080:8080 acend/changeme-training
 ```
 
 
+### Using Buildah and Podman
+
+Build the image:
+
+```bash
+buildah build-using-dockerfile <--build-arg TRAINING_HUGO_ENV=...> -t acend/changeme-training .
+```
+
+Run it locally with the following command. Beware that `--rmi` automatically removes the built image when the container stops, so you either have to rebuild it or remove the parameter from the command.
+
+```bash
+podman run --rm --rmi --interactive --publish 8080:8080 localhost/acend/changeme-training
+```
+
+
 ## How to develop locally
 
 To develop locally we don't want to rebuild the entire container image every time something changed, and it is also important to use the same hugo versions like in production.
