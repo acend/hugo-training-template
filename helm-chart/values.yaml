@@ -1,6 +1,4 @@
 # CHANGEME
-
-
 acendTraining:
   servicePort: 8080
   deployments:
