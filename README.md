@@ -135,6 +135,12 @@ export HUGO_VERSION=$(grep "FROM klakegg/hugo" Dockerfile | sed 's/FROM klakegg\
 docker run --rm --interactive -v $(pwd):/src klakegg/hugo:${HUGO_VERSION}-ci /bin/bash -c "set -euo pipefail;npm install; npm run mdlint;"
 ```
 
+Automatically fix errors if possible:
+
+```bash
+npm run mdlint-fix
+```
+
 
 ## How to setup an entire new Training
 
