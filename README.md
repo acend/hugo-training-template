@@ -68,51 +68,84 @@ This is only rendered when `enabledModule` in `config.toml` **does not** contain
 ```
 
 
-## Build using Docker
+## Build production image locally
+
+
+### Docker
 
 Build the image:
 
 ```bash
-docker build <--build-arg TRAINING_HUGO_ENV=...> -t acend/changeme-training .
+docker build [--build-arg TRAINING_HUGO_ENV=...] -t acend/changeme-training .
 ```
 
 Run it locally:
 
 ```bash
-docker run -i -p 8080:8080 acend/changeme-training
+docker run --rm -p 8080:8080 acend/changeme-training
 ```
 
 
-### Using Buildah and Podman
+### Buildah and Podman
 
 Build the image:
 
 ```bash
-buildah build-using-dockerfile <--build-arg TRAINING_HUGO_ENV=...> -t acend/changeme-training .
+buildah build-using-dockerfile [--build-arg TRAINING_HUGO_ENV=...] -t acend/changeme-training .
 ```
 
-Run it locally with the following command. Beware that `--rmi` automatically removes the built image when the container stops, so you either have to rebuild it or remove the parameter from the command.
+Run it locally:
 
 ```bash
-podman run --rm --rmi --interactive --publish 8080:8080 localhost/acend/changeme-training
+podman run --rm --rmi --publish 8080:8080 localhost/acend/changeme-training
 ```
+
+**Note:** Beware that `--rmi` automatically removes the built image when the container stops, so you either have to rebuild it or remove the parameter from the command.
 
 
 ## How to develop locally
+
+
+### Docker Compose
+
+You can use `docker-compose`. If you prefer Podman check out [podman-compose](https://github.com/containers/podman-compose).
+
+```bash
+docker-compose up
+```
+
+Use the following command to set the hugo environment
+
+```bash
+HUGO_ENVIRONMENT="something" docker-compose up
+```
+
+To rebuild the image if something changed in the `Dockerfile`:
+
+```bash
+docker-compose up --build
+```
+
+The website is available at [localhost:8080](http://localhost:8080)
+
+**Tip:** Set the following environment variables for faster builds: `DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1`
+
+
+### Plain Docker
 
 To develop locally we don't want to rebuild the entire container image every time something changed, and it is also important to use the same hugo versions like in production.
 We simply mount the working directory into a running container, where hugo is started in the server mode.
 
 ```bash
 export HUGO_VERSION=$(grep "FROM klakegg/hugo" Dockerfile | sed 's/FROM klakegg\/hugo://g' | sed 's/ AS builder//g')
-docker run --rm --interactive --publish 8080:8080 -v $(pwd):/src klakegg/hugo:${HUGO_VERSION} server -p 8080 --bind 0.0.0.0
+docker run --rm --publish 8080:8080 -v $(pwd):/src klakegg/hugo:${HUGO_VERSION} server -p 8080
 ```
 
-use the following command to set the hugo environment
+Use the following command to set the hugo environment
 
 ```bash
 export HUGO_VERSION=$(grep "FROM klakegg/hugo" Dockerfile | sed 's/FROM klakegg\/hugo://g' | sed 's/ AS builder//g')
-docker run --rm --interactive --publish 8080:8080 -v $(pwd):/src klakegg/hugo:${HUGO_VERSION} server --environment=<environment> -p 8080 --bind 0.0.0.0
+docker run --rm --publish 8080:8080 -v $(pwd):/src klakegg/hugo:${HUGO_VERSION} server --environment=<environment> -p 8080
 ```
 
 
@@ -132,7 +165,7 @@ Npm not installed? no problem
 
 ```bash
 export HUGO_VERSION=$(grep "FROM klakegg/hugo" Dockerfile | sed 's/FROM klakegg\/hugo://g' | sed 's/ AS builder//g')
-docker run --rm --interactive -v $(pwd):/src klakegg/hugo:${HUGO_VERSION}-ci /bin/bash -c "set -euo pipefail;npm install; npm run mdlint;"
+docker run --rm -v $(pwd):/src klakegg/hugo:${HUGO_VERSION}-ci /bin/bash -c "npm install && npm run mdlint"
 ```
 
 
