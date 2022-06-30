@@ -261,6 +261,65 @@ helm install --dry-run --repo https://acend.github.io/helm-charts/  <release> ac
 ```
 
 
+## Migrate to Hugo Modules
+
+* Install the latest version of the hugo extended version binary: https://github.com/gohugoio/hugo/releases
+* Init the site as Hugo Module `hugo mod init github.com/acend/<training>`
+* Add the Hugo Modules Dependencies
+
+```sh
+hugo mod get github.com/google/docsy
+hugo mod get github.com/google/docsy/dependencies
+hugo mod get github.com/acend/docsy-plus
+hugo mod get github.com/acend/docsy-acend
+hugo mod get github.com/puzzle/docsy-puzzle
+```
+
+* Remove `themes` definition from config.toml files
+* Add Hugo module definitions in config.toml files
+
+```yaml
+# acend design
+[module]
+  [module.hugoVersion]
+    extended = true
+    min = "0.100.0"
+  [[module.imports]]
+    path = "github.com/acend/docsy-acend"
+    disable = false
+  [[module.imports]]
+    path = "github.com/acend/docsy-plus"
+    disable = false
+  [[module.imports]]
+    path = "github.com/google/docsy"
+    disable = false
+  [[module.imports]]
+    path = "github.com/google/docsy/dependencies"
+    disable = false
+```
+```yaml
+# puzzle design
+[module]
+  [module.hugoVersion]
+    extended = true
+    min = "0.100.0"
+  [[module.imports]]
+    path = "github.com/puzzle/docsy-puzzle"
+    disable = false
+  [[module.imports]]
+    path = "github.com/acend/docsy-plus"
+    disable = false
+  [[module.imports]]
+    path = "github.com/google/docsy"
+    disable = false
+  [[module.imports]]
+    path = "github.com/google/docsy/dependencies"
+    disable = false
+```
+
+* Add the changes and commit them
+
+
 ## Contributions
 
 If you find errors, bugs or missing information please help us improve and have a look at the [Contribution Guide](CONTRIBUTING.md).
