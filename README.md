@@ -14,15 +14,15 @@ The main part are the labs, which can be found at [content/en/docs](content/en/d
 
 This site is built using the static page generator [Hugo](https://gohugo.io/).
 
-The page uses the [docsy theme](https://github.com/google/docsy) which is included as a Git Submodule.
+The page uses the [docsy theme](https://github.com/google/docsy) which is included as a Hugo Module.
 Docsy is being enhanced using [docsy-plus](https://github.com/acend/docsy-plus/) as well as
 [docsy-acend](https://github.com/acend/docsy-acend/) and [docsy-puzzle](https://github.com/puzzle/docsy-puzzle/)
 for brand specific settings.
 
-After cloning the main repo, you need to initialize the submodule like this:
+After cloning the main repo, you need to initialize the Hugo Module like this:
 
 ```bash
-git submodule update --init --recursive
+hugo mod get
 ```
 
 The default configuration uses the acend setup from [config/_default](config/_default/config.toml).
@@ -41,7 +41,7 @@ Alternatively you can use the Puzzle setup from [config/puzzle](config/puzzle/co
 Run the following command to update all submodules with their newest upstream version:
 
 ```bash
-git submodule update --remote
+hugo mod get -u
 ```
 
 
@@ -179,27 +179,33 @@ npm run mdlint-fix
 
 * create an empty git repo
 * Copy the contents of this repo to it
-  * check git submodules
-    * all of [.gitmodules](.gitmodules) needed?
-    * if checkout is not working, add them manually:
-      * `git submodule add https://github.com/google/docsy.git ./themes/docsy`
-      * `git submodule add https://github.com/acend/docsy-plus.git ./themes/docsy-plus`
-      * ...
-  * replace all CHANGEME
-    * `https://github.com/changeme/changeme-training` to your repo url
-    * `quay.io/acend/hugo-training-template` to your image registry url
-    * `acend/changeme-training` to your org and training
-    * `changeme/changeme-training` to your org and training
-    * `acend-hugo-training-template-prod` to your prod deployment namespace
-    * `acend-hugo-training-template-test` to your test deployment namespace
-    * `hugo-training-template` to your training
-    * `changeme-training` to your training
-    * `changeme Training` to your training name, eg. `Hugo Training`
-    * `acend-hugo-template` to your org and training
-    * check remaining `changeme`'s
-  * Configure all names, URLs and so on in the [build actions](.github/workflows/) and [values.yaml](./helm-chart/values.yaml)
-  * remove `How to setup an entire new Training` chapter from README.md
-  * adapt or remove not needed variants in the config folder
+  * Install latest hugo binary
+  * Init the site as Hugo Module `hugo mod init github.com/acend/<training>`
+  * Add the Hugo Modules Dependencies
+
+```sh
+hugo mod get github.com/google/docsy
+hugo mod get github.com/google/docsy/dependencies
+hugo mod get github.com/acend/docsy-plus
+hugo mod get github.com/acend/docsy-acend
+hugo mod get github.com/puzzle/docsy-puzzle
+```
+
+* replace all CHANGEME
+  * `https://github.com/changeme/changeme-training` to your repo url
+  * `quay.io/acend/hugo-training-template` to your image registry url
+  * `acend/changeme-training` to your org and training
+  * `changeme/changeme-training` to your org and training
+  * `acend-hugo-training-template-prod` to your prod deployment namespace
+  * `acend-hugo-training-template-test` to your test deployment namespace
+  * `hugo-training-template` to your training
+  * `changeme-training` to your training
+  * `changeme Training` to your training name, eg. `Hugo Training`
+  * `acend-hugo-template` to your org and training
+  * check remaining `changeme`'s
+* Configure all names, URLs and so on in the [build actions](.github/workflows/) and [values.yaml](./helm-chart/values.yaml)
+* remove `How to setup an entire new Training` chapter from README.md
+* adapt or remove not needed variants in the config folder
 * Create a container image Repo and make sure the secrets configured in the Github actions have access to the repo
 * Create two namespaces on your k8s cluster, make sure the secrets configured in the Github actions have access to the k8s Cluster and namespace or project in case of rancher
   * Test namespace: used to deploy PR Environments
@@ -259,6 +265,65 @@ For debugging purposes use the `--dry-run` parameter
 ```bash
 helm install --dry-run --repo https://acend.github.io/helm-charts/  <release> acend-training-chart --values helm-chart/values.yaml -n <namespace>
 ```
+
+
+## Migrate to Hugo Modules
+
+* Install the latest version of the hugo extended version binary: https://github.com/gohugoio/hugo/releases
+* Init the site as Hugo Module `hugo mod init github.com/acend/<training>`
+* Add the Hugo Modules Dependencies
+
+```sh
+hugo mod get github.com/google/docsy
+hugo mod get github.com/google/docsy/dependencies
+hugo mod get github.com/acend/docsy-plus
+hugo mod get github.com/acend/docsy-acend
+hugo mod get github.com/puzzle/docsy-puzzle
+```
+
+* Remove `themes` definition from config.toml files
+* Add Hugo module definitions in config.toml files
+
+```yaml
+# acend design
+[module]
+  [module.hugoVersion]
+    extended = true
+    min = "0.100.0"
+  [[module.imports]]
+    path = "github.com/acend/docsy-acend"
+    disable = false
+  [[module.imports]]
+    path = "github.com/acend/docsy-plus"
+    disable = false
+  [[module.imports]]
+    path = "github.com/google/docsy"
+    disable = false
+  [[module.imports]]
+    path = "github.com/google/docsy/dependencies"
+    disable = false
+```
+```yaml
+# puzzle design
+[module]
+  [module.hugoVersion]
+    extended = true
+    min = "0.100.0"
+  [[module.imports]]
+    path = "github.com/puzzle/docsy-puzzle"
+    disable = false
+  [[module.imports]]
+    path = "github.com/acend/docsy-plus"
+    disable = false
+  [[module.imports]]
+    path = "github.com/google/docsy"
+    disable = false
+  [[module.imports]]
+    path = "github.com/google/docsy/dependencies"
+    disable = false
+```
+
+* Add the changes and commit them
 
 
 ## Contributions
