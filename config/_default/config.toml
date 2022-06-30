@@ -3,8 +3,6 @@ title = "Changeme Training"
 
 enableGitInfo = true
 
-theme = ["docsy-acend", "docsy-plus", "docsy"]
-
 languageCode = "en-us"
 
 contentDir = "content/en"
@@ -114,6 +112,12 @@ url = "https://linkedin.com/company/acendch/"
   [module.hugoVersion]
     extended = true
     min = "0.100.0"
+  [[module.imports]]
+    path = "github.com/acend/docsy-acend"
+    disable = false
+  [[module.imports]]
+    path = "github.com/acend/docsy-plus"
+    disable = false
   [[module.imports]]
     path = "github.com/google/docsy"
     disable = false
