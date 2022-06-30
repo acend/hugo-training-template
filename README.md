@@ -179,27 +179,33 @@ npm run mdlint-fix
 
 * create an empty git repo
 * Copy the contents of this repo to it
-  * check git submodules
-    * all of [.gitmodules](.gitmodules) needed?
-    * if checkout is not working, add them manually:
-      * `git submodule add https://github.com/google/docsy.git ./themes/docsy`
-      * `git submodule add https://github.com/acend/docsy-plus.git ./themes/docsy-plus`
-      * ...
-  * replace all CHANGEME
-    * `https://github.com/changeme/changeme-training` to your repo url
-    * `quay.io/acend/hugo-training-template` to your image registry url
-    * `acend/changeme-training` to your org and training
-    * `changeme/changeme-training` to your org and training
-    * `acend-hugo-training-template-prod` to your prod deployment namespace
-    * `acend-hugo-training-template-test` to your test deployment namespace
-    * `hugo-training-template` to your training
-    * `changeme-training` to your training
-    * `changeme Training` to your training name, eg. `Hugo Training`
-    * `acend-hugo-template` to your org and training
-    * check remaining `changeme`'s
-  * Configure all names, URLs and so on in the [build actions](.github/workflows/) and [values.yaml](./helm-chart/values.yaml)
-  * remove `How to setup an entire new Training` chapter from README.md
-  * adapt or remove not needed variants in the config folder
+  * Install latest hugo binary
+  * Init the site as Hugo Module `hugo mod init github.com/acend/<training>`
+  * Add the Hugo Modules Dependencies
+
+```sh
+hugo mod get github.com/google/docsy
+hugo mod get github.com/google/docsy/dependencies
+hugo mod get github.com/acend/docsy-plus
+hugo mod get github.com/acend/docsy-acend
+hugo mod get github.com/puzzle/docsy-puzzle
+```
+
+* replace all CHANGEME
+  * `https://github.com/changeme/changeme-training` to your repo url
+  * `quay.io/acend/hugo-training-template` to your image registry url
+  * `acend/changeme-training` to your org and training
+  * `changeme/changeme-training` to your org and training
+  * `acend-hugo-training-template-prod` to your prod deployment namespace
+  * `acend-hugo-training-template-test` to your test deployment namespace
+  * `hugo-training-template` to your training
+  * `changeme-training` to your training
+  * `changeme Training` to your training name, eg. `Hugo Training`
+  * `acend-hugo-template` to your org and training
+  * check remaining `changeme`'s
+* Configure all names, URLs and so on in the [build actions](.github/workflows/) and [values.yaml](./helm-chart/values.yaml)
+* remove `How to setup an entire new Training` chapter from README.md
+* adapt or remove not needed variants in the config folder
 * Create a container image Repo and make sure the secrets configured in the Github actions have access to the repo
 * Create two namespaces on your k8s cluster, make sure the secrets configured in the Github actions have access to the k8s Cluster and namespace or project in case of rancher
   * Test namespace: used to deploy PR Environments
