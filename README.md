@@ -323,6 +323,12 @@ hugo mod get github.com/puzzle/docsy-puzzle
     disable = false
 ```
 
+* remove all Submodules
+
+```sh
+git rm themes/docsy themes/docsy-plus themes/docsy-acend themes/docsy-puzzle
+```
+
 * Add the changes and commit them
 
 
