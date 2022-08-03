@@ -20,6 +20,17 @@
       "automerge": true
     },
     {
+      "matchDatasources": ["golang-version"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "matchDepTypes": ["action"],
+      "matchDatasources": ["github-tags"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
       "matchManagers": ["git-submodules"],
       "matchPackageNames": ["themes/docsy-plus", "themes/docsy-acend", "themes/docsy-puzzle"],
       "automerge": true
