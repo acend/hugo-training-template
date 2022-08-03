@@ -332,6 +332,19 @@ git rm themes/docsy themes/docsy-plus themes/docsy-acend themes/docsy-puzzle
 * Add the changes and commit them
 
 
+### docsy plus, acend and puzzle as Hugo modules
+
+Update the dependencies:
+
+```
+hugo mod get -u
+```
+
+Remove the imports for the `github.com/google/docsy` and `github.com/google/docsy/dependencies` from config.toml
+
+Add and commit the changes
+
+
 ## Contributions
 
 If you find errors, bugs or missing information please help us improve and have a look at the [Contribution Guide](CONTRIBUTING.md).
