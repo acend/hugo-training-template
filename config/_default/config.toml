@@ -109,6 +109,7 @@ url = "https://linkedin.com/company/acendch/"
 [module]
   # uncomment line below for temporary local development of module
   # replacements = "github.com/google/docsy -> ../../docsy"
+  # replacements = "github.com/acend/docsy-plus -> ../../docsy-plus"
   [module.hugoVersion]
     extended = true
     min = "0.100.0"
@@ -118,9 +119,3 @@ url = "https://linkedin.com/company/acendch/"
   [[module.imports]]
     path = "github.com/acend/docsy-plus"
     disable = false
-  [[module.imports]]
-    path = "github.com/google/docsy"
-    disable = false
-  [[module.imports]]
-    path = "github.com/google/docsy/dependencies"
-    disable = false    
