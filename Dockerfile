@@ -1,4 +1,4 @@
-FROM klakegg/hugo:0.107.0-ext-ubuntu AS builder
+FROM docker.io/klakegg/hugo:0.107.0-ext-ubuntu AS builder
 
 ARG TRAINING_HUGO_ENV=default
 
@@ -6,7 +6,7 @@ COPY . /src
 
 RUN hugo --environment ${TRAINING_HUGO_ENV} --minify
 
-FROM ubuntu:jammy AS wkhtmltopdf
+FROM docker.io/ubuntu:jammy AS wkhtmltopdf
 RUN apt-get update \
     && apt-get install -y curl \
     && curl -L https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb --output wkhtmltox_0.12.6.1-2.jammy_amd64.deb \
@@ -23,7 +23,7 @@ RUN wkhtmltopdf --enable-internal-links --enable-local-file-access \
     --header-html /pdf/header/index.html --footer-html /pdf/footer/index.html \
     /pdf/index.html /pdf.pdf
 
-FROM nginxinc/nginx-unprivileged:1.23-alpine
+FROM docker.io/nginxinc/nginx-unprivileged:1.23-alpine
 
 LABEL maintainer acend.ch
 LABEL org.opencontainers.image.title "acend.ch's CHANGEME Basics Training"
