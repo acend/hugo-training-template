@@ -19,7 +19,7 @@
   "homepage": "https://github.com/changeme/changeme-training#readme",
   "devDependencies": {
     "husky": "8.0.3",
-    "lint-staged": "13.1.1",
+    "lint-staged": "13.1.2",
     "markdownlint-cli": "0.33.0"
   },
   "lint-staged": {
