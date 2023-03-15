@@ -54,24 +54,6 @@ jobs:
           tags: |
             quay.io/acend/hugo-training-template:pr-${{ github.event.pull_request.number }}
       -
-        name: Run vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          # changeme
-          image-ref: 'quay.io/acend/hugo-training-template:pr-${{ github.event.pull_request.number }}'
-          format: 'table'
-          output: 'trivy-results.txt'
-          exit-code: '0'
-          ignore-unfixed: true
-          vuln-type: 'os'
-          severity: 'CRITICAL,HIGH'
-      -
-        name: Archive vulnerability scan results
-        uses: actions/upload-artifact@v3
-        with:
-          name: trivy-results-build
-          path: trivy-results.txt
-      -
         name: Build Puzzle Version
         uses: docker/build-push-action@v4
         with:
@@ -96,7 +78,7 @@ jobs:
       -
         name: Create KUBECONFIG
         env:
-          KUBE_CONFIG: '${{ secrets.KUBECONFIG_TEST }}'
+          KUBE_CONFIG: '${{ secrets.KUBECONFIG_K8S_ACEND_TEST }}'
         run: |
           mkdir -p $HOME/.kube
           echo "$KUBE_CONFIG" > $HOME/.kube/config
@@ -127,4 +109,4 @@ jobs:
           message: |
            PR Environments:
            * acend version <https://hugo-training-template-pr-${{ github.event.pull_request.number }}.training.acend.ch>
-           * puzzle version <https://hugo-training-template-pr-${{ github.event.pull_request.number }}.k8s.puzzle.ch>
+           * puzzle version <https://hugo-training-template-pr-${{ github.event.pull_request.number }}.training.puzzle.ch>
