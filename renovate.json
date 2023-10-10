@@ -26,6 +26,12 @@
       "matchDatasources": ["github-tags"],
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true
+    },
+    {
+      "matchManagers": ["gomod"],
+      "matchDepTypes": ["indirect"],
+      "enabled": true,
+      "automerge": false
     }
   ]
 }
