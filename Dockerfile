@@ -25,7 +25,7 @@ RUN wkhtmltopdf --enable-internal-links --enable-local-file-access \
 
 FROM docker.io/nginxinc/nginx-unprivileged:1.27-alpine
 
-LABEL maintainer acend.ch
+LABEL maintainer="acend.ch"
 LABEL org.opencontainers.image.title="acend.ch's CHANGEME Basics Training"
 LABEL org.opencontainers.image.description="Container with acend.ch's CHANGEME Training content"
 LABEL org.opencontainers.image.authors="acend.ch"
