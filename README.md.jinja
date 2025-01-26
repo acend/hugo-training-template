@@ -1,4 +1,4 @@
-# CHANGEME Training
+# {{ project_name }}
 
 CHANGEME Training Description
 
@@ -50,6 +50,7 @@ hugo mod get -u
 
 #### `onlyWhen` and `onlyWhenNot`
 
+{% raw %}
 The `onlyWhen` and `onlyWhenNot` shortcodes allow text to be rendered if certain conditions apply.
 
 * `{{% onlyWhen variant1 %}}`: This is only rendered when `enabledModule` in `config.toml` contains `variant1`
@@ -67,6 +68,7 @@ This is only rendered when `enabledModule` in `config.toml` **does not** contain
 {{% /onlyWhen %}}
 ```
 
+{% endraw %}
 
 ## Build production image locally
 
