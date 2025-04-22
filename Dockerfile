@@ -24,6 +24,9 @@ RUN wkhtmltopdf \
     /pdf/index.html /pdf.pdf
 
 FROM docker.io/nginxinc/nginx-unprivileged:1.27-alpine
+USER root
+COPY nginx.conf /etc/nginx/nginx.conf
+USER 101
 
 LABEL maintainer="acend.ch"
 LABEL org.opencontainers.image.title="acend.ch's CHANGEME Basics Training"
