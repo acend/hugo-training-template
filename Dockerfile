@@ -17,13 +17,16 @@ RUN apt-get update \
 
 COPY --from=builder /src/public /
 
-RUN wkhtmltopdf --enable-internal-links --enable-local-file-access \
+RUN wkhtmltopdf \
     --margin-top 35mm --margin-bottom 22mm --margin-left 15mm --margin-right 10mm \
     --enable-internal-links --enable-local-file-access \
     --header-html /pdf/header/index.html --footer-html /pdf/footer/index.html \
     /pdf/index.html /pdf.pdf
 
 FROM docker.io/nginxinc/nginx-unprivileged:1.27-alpine
+USER root
+COPY nginx.conf /etc/nginx/nginx.conf
+USER 101
 
 LABEL maintainer="acend.ch"
 LABEL org.opencontainers.image.title="acend.ch's CHANGEME Basics Training"
