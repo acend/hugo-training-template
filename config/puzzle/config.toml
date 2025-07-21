@@ -12,11 +12,11 @@
     disable = false
 
 [params]
-copyright = "Puzzle ITC GmbH"
+copyright = "Puzzle ITC"
 imagePrefix = "puzzle_"
 
 [[Languages.en.menu.main]]
-copyright = "Puzzle ITC GmbH"
+copyright = "Puzzle ITC"
 url = "https://www.puzzle.ch"
 
 ############################## social links ##############################
